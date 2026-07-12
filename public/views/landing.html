@@ -33,7 +33,7 @@
     <section class="container" style="padding:20px 20px 10px">
       <div class="grid grid-3">
         <div class="card">
-          <h3>🔒 Hard tenant isolation</h3>
+          <h3>🔒 Hard firm isolation</h3>
           <p>Every row is scoped to your firm at the database layer. Firm A can never see
              Firm B's client data — enforced by design, not convention.</p>
         </div>
@@ -59,8 +59,8 @@
         <div class="card">
           <div class="step-num">1</div>
           <h3>Create your account</h3>
-          <p>Register your firm and you're instantly provisioned as your own isolated
-             tenant, on the free Starter plan — no setup, no sales call.</p>
+          <p>Register your firm and you're instantly provisioned your own isolated
+             workspace, on the free Starter plan — no setup, no sales call.</p>
         </div>
         <div class="card">
           <div class="step-num">2</div>
@@ -90,8 +90,8 @@
       </div>
       <div class="grid grid-3">
         <div class="card">
-          <h3>🏢 Multi-tenant by design</h3>
-          <p>Every company gets a private workspace. Data, users, billing and settings are
+          <h3>🏢 Multi-firm by design</h3>
+          <p>Every firm gets a private workspace. Data, users, billing and settings are
              fully separated at the database layer — never merged, never shared.</p>
         </div>
         <div class="card">
@@ -112,7 +112,7 @@
         </div>
         <div class="card">
           <h3>🛠️ Global admin console</h3>
-          <p>Platform operators get a dedicated console with live metrics, per-tenant
+          <p>Platform operators get a dedicated console with live metrics, per-firm
              overrides, and a full audit trail of every privileged action.</p>
         </div>
         <div class="card">
@@ -132,19 +132,19 @@
         <div class="card">
           <span class="icon">🧱</span>
           <div>
-            <h3>Every row is tenant-scoped</h3>
-            <p>Companies, users, invoices, usage and every other record carry an explicit
-               tenant id. Application code always filters by it — there is no query path
+            <h3>Every row is firm-scoped</h3>
+            <p>Firms, users, invoices, usage and every other record carry an explicit
+               firm id. Application code always filters by it — there is no query path
                that can cross the boundary.</p>
           </div>
         </div>
         <div class="card">
           <span class="icon">🔑</span>
           <div>
-            <h3>Server decides your tenant, not you</h3>
-            <p>Your tenant is bound to your session the moment you log in. The browser never
-               sends a tenant id, so there's nothing a client could tamper with to reach
-               another company's data.</p>
+            <h3>Server decides your firm, not you</h3>
+            <p>Your firm is bound to your session the moment you log in. The browser never
+               sends a firm id, so there's nothing in the request that could be tampered
+               with to reach another firm's data.</p>
           </div>
         </div>
         <div class="card">
@@ -212,10 +212,10 @@
         <h2>Frequently asked questions</h2>
       </div>
       <details class="faq-item">
-        <summary>Is my company's data really isolated from other tenants?</summary>
-        <p>Yes. Every tenant-owned table carries a tenant id, and every application query
-           is scoped to the tenant bound to your logged-in session — never one supplied by
-           the browser. One company cannot address, let alone read, another's rows.</p>
+        <summary>Is my firm's data really isolated from other firms?</summary>
+        <p>Yes. Every firm-owned table carries a firm id, and every application query
+           is scoped to the firm bound to your logged-in session — never one supplied by
+           the browser. One firm cannot address, let alone read, another firm's rows.</p>
       </details>
       <details class="faq-item">
         <summary>Can I change plans later?</summary>
@@ -237,7 +237,7 @@
       <details class="faq-item">
         <summary>Who can access the admin console?</summary>
         <p>Only platform operators with the super_admin role. It's a separate console from
-           your company's dashboard and cannot be reached by regular tenant users.</p>
+           your firm's dashboard and cannot be reached by regular firm users.</p>
       </details>
     </section>
   </main>
