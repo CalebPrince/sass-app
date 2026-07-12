@@ -21,6 +21,13 @@
     if (b.dataset.tab === 'subscription') loadSubscription();
   }));
 
+  document.getElementById('stat-contacts-card').addEventListener('click', () => {
+    document.querySelector('.side-nav button[data-tab="contacts"]').click();
+  });
+  document.getElementById('stat-projects-card').addEventListener('click', () => {
+    document.querySelector('.side-nav button[data-tab="projects"]').click();
+  });
+
   // ---- overview ----
   async function loadOverview() {
     const { data } = await Api.get('/api/dashboard/overview');
@@ -32,6 +39,11 @@
     document.getElementById('usage-bar').style.width = data.usage.percent + '%';
     document.getElementById('usage-text').textContent =
       `${data.usage.percent}% of your monthly resource limit used.`;
+
+    document.getElementById('stat-contacts').textContent =
+      `${data.contacts.used.toLocaleString()} / ${data.contacts.limit.toLocaleString()}`;
+    document.getElementById('stat-projects').textContent =
+      `${data.projects.used.toLocaleString()} / ${data.projects.limit.toLocaleString()}`;
 
     const rows = data.activity.map((a) => `
       <tr>

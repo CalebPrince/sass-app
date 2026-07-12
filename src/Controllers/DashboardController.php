@@ -7,6 +7,8 @@ use App\Core\Controller;
 use App\Core\Request;
 use App\Core\Response;
 use App\Core\Session;
+use App\Models\Contact;
+use App\Models\Project;
 use App\Models\Subscription;
 use App\Models\UsageLog;
 
@@ -37,6 +39,14 @@ final class DashboardController extends Controller
                 'used'    => $used,
                 'limit'   => $limit,
                 'percent' => $limit > 0 ? min(100, round($used / $limit * 100, 1)) : 0,
+            ],
+            'contacts' => [
+                'used'  => Contact::countForTenant($tenantId),
+                'limit' => (int) ($tierConfig['max_contacts'] ?? 0),
+            ],
+            'projects' => [
+                'used'  => Project::countForTenant($tenantId),
+                'limit' => (int) ($tierConfig['max_projects'] ?? 0),
             ],
             'activity' => UsageLog::recentForTenant($tenantId, 10),
         ]);

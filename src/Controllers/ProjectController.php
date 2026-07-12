@@ -11,6 +11,7 @@ use App\Models\Project;
 use App\Models\Task;
 use App\Models\Subscription;
 use App\Models\User;
+use App\Models\UsageLog;
 
 /**
  * Tenant-scoped project manager, plus the task list nested under each project.
@@ -40,6 +41,7 @@ final class ProjectController extends Controller
         }
 
         $project = Project::create($tenantId, $fields['name'], trim((string) $request->input('description', '')));
+        UsageLog::record($tenantId, Session::userId(), 'project.created', 'project', 1, ['name' => $fields['name']]);
         Response::created(['project' => $project]);
     }
 
@@ -110,6 +112,7 @@ final class ProjectController extends Controller
             $dueDate
         );
 
+        UsageLog::record($tenantId, Session::userId(), 'task.created', 'task', 1, ['title' => $fields['title'], 'project_id' => $projectId]);
         Response::created(['task' => $task]);
     }
 

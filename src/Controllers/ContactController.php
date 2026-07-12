@@ -9,6 +9,7 @@ use App\Core\Response;
 use App\Core\Session;
 use App\Models\Contact;
 use App\Models\Subscription;
+use App\Models\UsageLog;
 
 /**
  * Tenant-scoped contact/lead manager. Every read and write is scoped to the
@@ -46,6 +47,7 @@ final class ContactController extends Controller
             trim((string) $request->input('notes', ''))
         );
 
+        UsageLog::record($tenantId, Session::userId(), 'contact.created', 'contact', 1, ['name' => $fields['name']]);
         Response::created(['contact' => $contact]);
     }
 

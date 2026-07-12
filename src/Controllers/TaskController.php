@@ -9,6 +9,7 @@ use App\Core\Response;
 use App\Core\Session;
 use App\Models\Task;
 use App\Models\User;
+use App\Models\UsageLog;
 
 /**
  * Task mutation by task id. A task's own id (tenant-scoped) is enough to
@@ -43,6 +44,10 @@ final class TaskController extends Controller
             $this->resolveAssignee($request, $tenantId),
             $this->resolveDueDate($request)
         );
+
+        if ($existing['status'] !== 'done' && $status === 'done') {
+            UsageLog::record($tenantId, Session::userId(), 'task.completed', 'task', 1, ['title' => $fields['title']]);
+        }
 
         Response::ok(['task' => $task], 'Updated');
     }
