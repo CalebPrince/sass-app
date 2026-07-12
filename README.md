@@ -1,8 +1,16 @@
 # Nimbus SaaS
 
-A clean, zero-bloat, multi-tenant SaaS starter. Raw object-oriented **PHP + PDO**
-over an indexed **SQLite** database, hydrated by **vanilla JS** — no framework, no
-bundler. Booted locally with a single **Python** launcher.
+A clean, zero-bloat, multi-tenant SaaS starter, positioned as practice management
+for accounting firms — clients, engagements, and deadlines on top of the same
+tenant-isolated core. Raw object-oriented **PHP + PDO** over an indexed **SQLite**
+database, hydrated by **vanilla JS** — no framework, no bundler. Booted locally
+with a single **Python** launcher.
+
+> **Naming note**: the UI says "Clients" and "Engagements", but the underlying
+> tables/models/routes are still `contacts`/`Contact`/`/api/contacts` and
+> `projects`/`Project`/`/api/projects` — a deliberate light rebrand (relabel +
+> add accounting-specific fields) rather than a full rename. See
+> [Clients](#clients-mini-crm) and [Engagements](#engagements--tasks) below.
 
 ## Quick start
 
@@ -39,9 +47,9 @@ restart.
 
 | # | Layer | Route | Notes |
 |---|-------|-------|-------|
-| 1 | **Public marketing site** | `/` | Hero, how-it-works, feature deep-dive, tenant-isolation explainer, pricing tiers (Starter / Pro / Enterprise), FAQ, CTAs into registration. |
+| 1 | **Public marketing site** | `/` | Hero, how-it-works, feature deep-dive, tenant-isolation explainer, pricing tiers (Starter / Pro / Enterprise), FAQ, CTAs into registration — copy positioned for accounting firms. |
 | 2 | **Authentication** | `/register`, `/login` | Session-based auth, CSRF-guarded, password rules, fixation-safe login, role-based post-auth redirect. |
-| 3 | **Client Control Center** | `/app` | Private per-tenant dashboard, usage meter, a Contacts tab (tier-limited lead/customer manager), a Projects tab (project/task tracker with assignees), and a Subscription tab (plan, features, invoices). |
+| 3 | **Client Control Center** | `/app` | Private per-tenant dashboard — usage meter, live Clients/Engagements stat tiles and activity feed, a Clients tab (tier-limited client manager with entity type/tax ID/fiscal year end), an Engagements tab (engagement/task tracker with type, deadline, and assignees), and a Subscription tab (plan, features, invoices). |
 | 4 | **Global Admin Console** | `/admin` | Super-admin only: live metrics (active users, MRR/ARR), user/tenant table with ban + tier + limit overrides, audit log, system switches. |
 
 ## Seeded demo accounts
@@ -117,29 +125,57 @@ POST /api/admin/tenants/{id}/status
 POST /api/admin/settings
 ```
 
-## Contacts (mini CRM)
+## Clients (mini CRM)
 
-Every tenant gets a private contact/lead list in the **Contacts** tab of the
-Control Center — name, email, phone, company, status (lead / active / customer /
-inactive), and notes. Contact count is capped per subscription tier via
-`max_contacts` in [`config/config.php`](config/config.php), enforced the same way
-the usage-event `resource_limit` is enforced. See
-[`src/Models/Contact.php`](src/Models/Contact.php) and
-[`src/Controllers/ContactController.php`](src/Controllers/ContactController.php).
+Every tenant gets a private client list in the **Clients** tab of the Control
+Center — name, email, phone, company, status (lead / active / customer /
+inactive), notes, and three accounting-specific fields: entity type (individual,
+sole prop, partnership, LLC, S-Corp, C-Corp, nonprofit, trust/estate, other), tax
+ID, and fiscal year end. `tax_id` is a **plaintext demo field only** — not
+encrypted, not production-ready PII handling. Client count is capped per
+subscription tier via `max_contacts` in [`config/config.php`](config/config.php),
+enforced the same way the usage-event `resource_limit` is enforced. Backed by the
+`contacts` table / `Contact` model — see [`src/Models/Contact.php`](src/Models/Contact.php)
+and [`src/Controllers/ContactController.php`](src/Controllers/ContactController.php).
 
-## Projects & tasks
+## Engagements & tasks
 
-Every tenant also gets a lightweight project tracker in the **Projects** tab —
-create projects, then select one to manage its tasks (title, description, status,
-assignee, due date). Assignees are drawn only from that tenant's own team
-(`GET /api/team`), so a task can never be handed to a user outside the company.
-Project count is capped per subscription tier via `max_projects` in
-[`config/config.php`](config/config.php), the same enforcement pattern as Contacts.
-Deleting a project cascades to its tasks (`ON DELETE CASCADE`). See
+Every tenant also gets a lightweight engagement tracker in the **Engagements**
+tab — create engagements (tax return, bookkeeping, audit, advisory, payroll,
+other) with a deadline, then select one to manage its tasks (title, description,
+status, assignee, due date). Assignees are drawn only from that tenant's own team
+(`GET /api/team`), so a task can never be handed to a user outside the firm.
+Engagement count is capped per subscription tier via `max_projects` in
+[`config/config.php`](config/config.php), the same enforcement pattern as
+Clients. Deleting an engagement cascades to its tasks (`ON DELETE CASCADE`).
+Backed by the `projects`/`tasks` tables / `Project`/`Task` models — see
 [`src/Models/Project.php`](src/Models/Project.php),
 [`src/Models/Task.php`](src/Models/Task.php),
 [`src/Controllers/ProjectController.php`](src/Controllers/ProjectController.php), and
 [`src/Controllers/TaskController.php`](src/Controllers/TaskController.php).
+
+## Overview activity feed
+
+Creating a client, creating an engagement or task, and marking a task done all
+log a `UsageLog` entry (`contact.created`, `project.created`, `task.created`,
+`task.completed`), the same table that already backs auth events and the demo
+"Simulate work" action. The Overview tab's Recent Activity table and its Clients /
+Engagements stat tiles (clickable to jump to that tab) read from this feed and
+from `Contact::countForTenant()` / `Project::countForTenant()`, so the landing
+dashboard stays current with what's actually happening in the account rather than
+only showing login history.
+
+## Evolving the schema after launch
+
+`Migration::run()` (`src/Core/Migration.php`) originally only ever ran
+`CREATE TABLE IF NOT EXISTS` statements from `schema.sql` — safe to repeat, but
+unable to add a column to a table that already exists on a booted database. It
+now also calls `Migration::addColumnIfMissing()`, which checks
+`PRAGMA table_info()` before running an `ALTER TABLE ... ADD COLUMN`, so adding a
+column to an existing table (as done for `contacts.entity_type`/`tax_id`/
+`fiscal_year_end` and `projects.engagement_type`/`deadline`) is safe on both a
+fresh install and an already-running database — no need to delete
+`storage/app.sqlite` when the schema grows.
 
 ## Requirements
 

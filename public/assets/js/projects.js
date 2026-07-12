@@ -9,6 +9,14 @@
   const PROJECT_BADGE = { active: 'badge-ok', archived: 'badge-muted' };
   const TASK_BADGE = { todo: 'badge-muted', in_progress: 'badge-warn', done: 'badge-ok' };
   const TASK_LABEL = { todo: 'To do', in_progress: 'In progress', done: 'Done' };
+  const ENGAGEMENT_LABEL = {
+    tax_return: 'Tax return',
+    bookkeeping: 'Bookkeeping',
+    audit: 'Audit',
+    advisory: 'Advisory',
+    payroll: 'Payroll',
+    other: 'Other',
+  };
 
   let projects = [];
   let selectedProjectId = null;
@@ -20,6 +28,8 @@
   const pName = document.getElementById('project-name');
   const pDescription = document.getElementById('project-description');
   const pStatus = document.getElementById('project-status');
+  const pEngagementType = document.getElementById('project-engagement-type');
+  const pDeadline = document.getElementById('project-deadline');
   const pMsg = document.getElementById('project-msg');
   const pSubmit = document.getElementById('project-submit');
   const pCancel = document.getElementById('project-cancel-edit');
@@ -29,8 +39,9 @@
     pForm.reset();
     pEditingId.value = '';
     pStatus.value = 'active';
-    pFormTitle.textContent = 'New project';
-    pSubmit.textContent = 'Add project';
+    pEngagementType.value = 'other';
+    pFormTitle.textContent = 'New engagement';
+    pSubmit.textContent = 'Add engagement';
     pCancel.style.display = 'none';
     pMsg.className = 'form-msg';
     pMsg.textContent = '';
@@ -41,7 +52,9 @@
     pName.value = p.name;
     pDescription.value = p.description;
     pStatus.value = p.status;
-    pFormTitle.textContent = 'Edit project';
+    pEngagementType.value = p.engagement_type;
+    pDeadline.value = p.deadline;
+    pFormTitle.textContent = 'Edit engagement';
     pSubmit.textContent = 'Save changes';
     pCancel.style.display = 'inline-block';
     pName.focus();
@@ -56,8 +69,12 @@
         <div class="card project-card ${String(p.id) === String(selectedProjectId) ? 'selected' : ''}" data-select="${p.id}">
           <h3>${p.name}</h3>
           <p class="muted">${p.description || 'No description'}</p>
-          <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">
             <span class="badge ${PROJECT_BADGE[p.status] || 'badge-muted'}">${p.status}</span>
+            <span class="badge badge-muted">${ENGAGEMENT_LABEL[p.engagement_type] || p.engagement_type}</span>
+            ${p.deadline ? `<span class="badge badge-warn">Due ${p.deadline}</span>` : ''}
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center">
             <span class="muted">${p.task_count} task${p.task_count === 1 ? '' : 's'}</span>
           </div>
           <div style="display:flex;gap:6px;margin-top:12px">
@@ -65,7 +82,7 @@
             <button class="btn btn-danger btn-sm" data-delete="${p.id}">Delete</button>
           </div>
         </div>`).join('')
-      : '<p class="muted">No projects yet — create one above.</p>';
+      : '<p class="muted">No engagements yet — create one above.</p>';
 
     document.querySelectorAll('.project-card').forEach((card) => {
       card.addEventListener('click', (e) => {
@@ -83,11 +100,11 @@
 
     document.querySelectorAll('#project-cards button[data-delete]').forEach((btn) => {
       btn.addEventListener('click', async () => {
-        if (!confirm('Delete this project and all its tasks?')) return;
+        if (!confirm('Delete this engagement and all its tasks?')) return;
         btn.disabled = true;
         try {
           await Api.post(`/api/projects/${btn.dataset.delete}/delete`);
-          toast('Project deleted');
+          toast('Engagement deleted');
           if (pEditingId.value === btn.dataset.delete) resetProjectForm();
           if (String(selectedProjectId) === btn.dataset.delete) {
             selectedProjectId = null;
@@ -111,16 +128,18 @@
       name: pName.value.trim(),
       description: pDescription.value.trim(),
       status: pStatus.value,
+      engagement_type: pEngagementType.value,
+      deadline: pDeadline.value,
     };
 
     try {
       const editingId = pEditingId.value;
       if (editingId) {
         await Api.post(`/api/projects/${editingId}`, payload);
-        toast('Project updated');
+        toast('Engagement updated');
       } else {
         await Api.post('/api/projects', payload);
-        toast('Project added');
+        toast('Engagement added');
       }
       resetProjectForm();
       await loadProjects();

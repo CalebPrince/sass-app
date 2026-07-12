@@ -21,6 +21,7 @@ use App\Models\UsageLog;
 final class ProjectController extends Controller
 {
     private const STATUSES = ['active', 'archived'];
+    private const ENGAGEMENT_TYPES = ['tax_return', 'bookkeeping', 'audit', 'advisory', 'payroll', 'other'];
 
     public function list(Request $request): void
     {
@@ -37,10 +38,21 @@ final class ProjectController extends Controller
         $limit = (int) ($tierConfig['max_projects'] ?? PHP_INT_MAX);
 
         if (Project::countForTenant($tenantId) >= $limit) {
-            Response::error('Project limit reached for your plan. Upgrade to add more.', 402);
+            Response::error('Engagement limit reached for your plan. Upgrade to add more.', 402);
         }
 
-        $project = Project::create($tenantId, $fields['name'], trim((string) $request->input('description', '')));
+        $engagementType = (string) $request->input('engagement_type', 'other');
+        if (!in_array($engagementType, self::ENGAGEMENT_TYPES, true)) {
+            $engagementType = 'other';
+        }
+
+        $project = Project::create(
+            $tenantId,
+            $fields['name'],
+            trim((string) $request->input('description', '')),
+            $engagementType,
+            trim((string) $request->input('deadline', ''))
+        );
         UsageLog::record($tenantId, Session::userId(), 'project.created', 'project', 1, ['name' => $fields['name']]);
         Response::created(['project' => $project]);
     }
@@ -60,8 +72,20 @@ final class ProjectController extends Controller
         if (!in_array($status, self::STATUSES, true)) {
             $status = $existing['status'];
         }
+        $engagementType = (string) $request->input('engagement_type', $existing['engagement_type']);
+        if (!in_array($engagementType, self::ENGAGEMENT_TYPES, true)) {
+            $engagementType = $existing['engagement_type'];
+        }
 
-        $project = Project::update($tenantId, $id, $fields['name'], trim((string) $request->input('description', '')), $status);
+        $project = Project::update(
+            $tenantId,
+            $id,
+            $fields['name'],
+            trim((string) $request->input('description', '')),
+            $status,
+            $engagementType,
+            trim((string) $request->input('deadline', ''))
+        );
         Response::ok(['project' => $project], 'Updated');
     }
 

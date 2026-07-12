@@ -13,13 +13,16 @@ final class Contact
         string $email,
         string $phone,
         string $company,
-        string $notes
+        string $notes,
+        string $entityType,
+        string $taxId,
+        string $fiscalYearEnd
     ): array {
         $db = Database::instance();
         $id = $db->execute(
-            'INSERT INTO contacts (uuid, tenant_id, name, email, phone, company, notes)
-             VALUES (?, ?, ?, ?, ?, ?, ?)',
-            [Tenant::uuid(), $tenantId, $name, $email, $phone, $company, $notes]
+            'INSERT INTO contacts (uuid, tenant_id, name, email, phone, company, notes, entity_type, tax_id, fiscal_year_end)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [Tenant::uuid(), $tenantId, $name, $email, $phone, $company, $notes, $entityType, $taxId, $fiscalYearEnd]
         );
         return self::find($tenantId, $id);
     }
@@ -49,14 +52,18 @@ final class Contact
         string $phone,
         string $company,
         string $status,
-        string $notes
+        string $notes,
+        string $entityType,
+        string $taxId,
+        string $fiscalYearEnd
     ): ?array {
         Database::instance()->execute(
             "UPDATE contacts
                 SET name = ?, email = ?, phone = ?, company = ?, status = ?, notes = ?,
+                    entity_type = ?, tax_id = ?, fiscal_year_end = ?,
                     updated_at = strftime('%Y-%m-%dT%H:%M:%fZ','now')
               WHERE tenant_id = ? AND id = ?",
-            [$name, $email, $phone, $company, $status, $notes, $tenantId, $id]
+            [$name, $email, $phone, $company, $status, $notes, $entityType, $taxId, $fiscalYearEnd, $tenantId, $id]
         );
         return self::find($tenantId, $id);
     }

@@ -126,6 +126,12 @@ CREATE TABLE IF NOT EXISTS contacts (
     status      TEXT    NOT NULL DEFAULT 'lead'
                     CHECK (status IN ('lead', 'active', 'customer', 'inactive')),
     notes       TEXT    NOT NULL DEFAULT '',
+    -- Accounting-practice fields. entity_type/engagement_type are validated in
+    -- the controller (not a CHECK here) so fresh installs and installs upgraded
+    -- via Migration::addColumnIfMissing() end up with an identical schema.
+    entity_type      TEXT NOT NULL DEFAULT 'individual',
+    tax_id           TEXT NOT NULL DEFAULT '', -- demo field only, plaintext, not for real PII
+    fiscal_year_end  TEXT NOT NULL DEFAULT '', -- e.g. "12-31"
     created_at  TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
     updated_at  TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
 );
@@ -144,6 +150,10 @@ CREATE TABLE IF NOT EXISTS projects (
     name        TEXT    NOT NULL,
     description TEXT    NOT NULL DEFAULT '',
     status      TEXT    NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'archived')),
+    -- engagement_type validated in the controller, not a CHECK here — see the
+    -- matching note on contacts.entity_type above.
+    engagement_type TEXT NOT NULL DEFAULT 'other',
+    deadline        TEXT NOT NULL DEFAULT '', -- filing/completion deadline for the engagement
     created_at  TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
     updated_at  TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
 );

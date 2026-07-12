@@ -12,8 +12,8 @@
       <a class="brand" href="/app">Nim<span>bus</span></a>
       <ul class="side-nav">
         <li><button data-tab="overview" class="active">📊 Overview</button></li>
-        <li><button data-tab="contacts">👥 Contacts</button></li>
-        <li><button data-tab="projects">🗂️ Projects</button></li>
+        <li><button data-tab="contacts">👥 Clients</button></li>
+        <li><button data-tab="projects">🗂️ Engagements</button></li>
         <li><button data-tab="subscription">💳 Subscription</button></li>
         <li><button data-tab="account">⚙️ Account</button></li>
       </ul>
@@ -41,11 +41,11 @@
 
         <div class="grid grid-2" style="margin-bottom:20px">
           <div class="card stat" id="stat-contacts-card" style="cursor:pointer">
-            <div class="k">Contacts</div>
+            <div class="k">Clients</div>
             <div class="v small" id="stat-contacts">—</div>
           </div>
           <div class="card stat" id="stat-projects-card" style="cursor:pointer">
-            <div class="k">Projects</div>
+            <div class="k">Engagements</div>
             <div class="v small" id="stat-projects">—</div>
           </div>
         </div>
@@ -73,7 +73,7 @@
       <!-- CONTACTS -->
       <section class="tab-panel" id="tab-contacts">
         <div class="card" style="margin-bottom:20px">
-          <h3 class="section-title" id="contact-form-title">Add contact</h3>
+          <h3 class="section-title" id="contact-form-title">Add client</h3>
           <form id="contact-form">
             <input type="hidden" id="contact-editing-id" value="">
             <div class="grid grid-3">
@@ -103,24 +103,46 @@
                 </select>
               </div>
               <div class="field">
+                <label>Entity type</label>
+                <select class="input" id="contact-entity-type">
+                  <option value="individual">Individual</option>
+                  <option value="sole_prop">Sole proprietorship</option>
+                  <option value="partnership">Partnership</option>
+                  <option value="llc">LLC</option>
+                  <option value="s_corp">S-Corp</option>
+                  <option value="c_corp">C-Corp</option>
+                  <option value="nonprofit">Nonprofit</option>
+                  <option value="trust_estate">Trust / Estate</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Tax ID</label>
+                <input class="input" id="contact-tax-id" placeholder="SSN / EIN">
+              </div>
+              <div class="field">
+                <label>Fiscal year end</label>
+                <input class="input" id="contact-fiscal-year-end" placeholder="MM-DD">
+              </div>
+              <div class="field">
                 <label>Notes</label>
                 <input class="input" id="contact-notes">
               </div>
             </div>
             <div class="form-msg" id="contact-msg"></div>
             <div style="display:flex;gap:8px">
-              <button class="btn btn-primary" type="submit" id="contact-submit">Add contact</button>
+              <button class="btn btn-primary" type="submit" id="contact-submit">Add client</button>
               <button class="btn btn-ghost" type="button" id="contact-cancel-edit" style="display:none">Cancel</button>
             </div>
           </form>
         </div>
 
         <div class="card">
-          <strong>Contacts</strong>
+          <strong>Clients</strong>
           <div class="table-wrap" style="margin-top:12px">
             <table>
-              <thead><tr><th>Name</th><th>Company</th><th>Status</th><th></th></tr></thead>
-              <tbody id="contact-rows"><tr><td colspan="4" class="muted">Loading…</td></tr></tbody>
+              <thead><tr><th>Name</th><th>Company</th><th>Entity type</th><th>Status</th><th></th></tr></thead>
+              <tbody id="contact-rows"><tr><td colspan="5" class="muted">Loading…</td></tr></tbody>
             </table>
           </div>
         </div>
@@ -129,7 +151,7 @@
       <!-- PROJECTS -->
       <section class="tab-panel" id="tab-projects">
         <div class="card" style="margin-bottom:20px">
-          <h3 class="section-title" id="project-form-title">New project</h3>
+          <h3 class="section-title" id="project-form-title">New engagement</h3>
           <form id="project-form">
             <input type="hidden" id="project-editing-id" value="">
             <div class="grid grid-3">
@@ -148,10 +170,25 @@
                   <option value="archived">Archived</option>
                 </select>
               </div>
+              <div class="field">
+                <label>Engagement type</label>
+                <select class="input" id="project-engagement-type">
+                  <option value="tax_return">Tax return</option>
+                  <option value="bookkeeping">Bookkeeping</option>
+                  <option value="audit">Audit</option>
+                  <option value="advisory">Advisory</option>
+                  <option value="payroll">Payroll</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Deadline</label>
+                <input class="input" id="project-deadline" type="date">
+              </div>
             </div>
             <div class="form-msg" id="project-msg"></div>
             <div style="display:flex;gap:8px">
-              <button class="btn btn-primary" type="submit" id="project-submit">Add project</button>
+              <button class="btn btn-primary" type="submit" id="project-submit">Add engagement</button>
               <button class="btn btn-ghost" type="button" id="project-cancel-edit" style="display:none">Cancel</button>
             </div>
           </form>

@@ -7,12 +7,18 @@ use App\Core\Database;
 
 final class Project
 {
-    public static function create(int $tenantId, string $name, string $description): array
-    {
+    public static function create(
+        int $tenantId,
+        string $name,
+        string $description,
+        string $engagementType,
+        string $deadline
+    ): array {
         $db = Database::instance();
         $id = $db->execute(
-            'INSERT INTO projects (uuid, tenant_id, name, description) VALUES (?, ?, ?, ?)',
-            [Tenant::uuid(), $tenantId, $name, $description]
+            'INSERT INTO projects (uuid, tenant_id, name, description, engagement_type, deadline)
+             VALUES (?, ?, ?, ?, ?, ?)',
+            [Tenant::uuid(), $tenantId, $name, $description, $engagementType, $deadline]
         );
         return self::find($tenantId, $id);
     }
@@ -39,14 +45,21 @@ final class Project
         );
     }
 
-    public static function update(int $tenantId, int $id, string $name, string $description, string $status): ?array
-    {
+    public static function update(
+        int $tenantId,
+        int $id,
+        string $name,
+        string $description,
+        string $status,
+        string $engagementType,
+        string $deadline
+    ): ?array {
         Database::instance()->execute(
             "UPDATE projects
-                SET name = ?, description = ?, status = ?,
+                SET name = ?, description = ?, status = ?, engagement_type = ?, deadline = ?,
                     updated_at = strftime('%Y-%m-%dT%H:%M:%fZ','now')
               WHERE tenant_id = ? AND id = ?",
-            [$name, $description, $status, $tenantId, $id]
+            [$name, $description, $status, $engagementType, $deadline, $tenantId, $id]
         );
         return self::find($tenantId, $id);
     }

@@ -19,6 +19,9 @@ use App\Models\UsageLog;
 final class ContactController extends Controller
 {
     private const STATUSES = ['lead', 'active', 'customer', 'inactive'];
+    private const ENTITY_TYPES = [
+        'individual', 'sole_prop', 'partnership', 'llc', 's_corp', 'c_corp', 'nonprofit', 'trust_estate', 'other',
+    ];
 
     public function list(Request $request): void
     {
@@ -35,7 +38,12 @@ final class ContactController extends Controller
         $limit = (int) ($tierConfig['max_contacts'] ?? PHP_INT_MAX);
 
         if (Contact::countForTenant($tenantId) >= $limit) {
-            Response::error('Contact limit reached for your plan. Upgrade to add more.', 402);
+            Response::error('Client limit reached for your plan. Upgrade to add more.', 402);
+        }
+
+        $entityType = (string) $request->input('entity_type', 'individual');
+        if (!in_array($entityType, self::ENTITY_TYPES, true)) {
+            $entityType = 'individual';
         }
 
         $contact = Contact::create(
@@ -44,7 +52,10 @@ final class ContactController extends Controller
             trim((string) $request->input('email', '')),
             trim((string) $request->input('phone', '')),
             trim((string) $request->input('company', '')),
-            trim((string) $request->input('notes', ''))
+            trim((string) $request->input('notes', '')),
+            $entityType,
+            trim((string) $request->input('tax_id', '')),
+            trim((string) $request->input('fiscal_year_end', ''))
         );
 
         UsageLog::record($tenantId, Session::userId(), 'contact.created', 'contact', 1, ['name' => $fields['name']]);
@@ -66,6 +77,10 @@ final class ContactController extends Controller
         if (!in_array($status, self::STATUSES, true)) {
             $status = $existing['status'];
         }
+        $entityType = (string) $request->input('entity_type', $existing['entity_type']);
+        if (!in_array($entityType, self::ENTITY_TYPES, true)) {
+            $entityType = $existing['entity_type'];
+        }
 
         $contact = Contact::update(
             $tenantId,
@@ -75,7 +90,10 @@ final class ContactController extends Controller
             trim((string) $request->input('phone', '')),
             trim((string) $request->input('company', '')),
             $status,
-            trim((string) $request->input('notes', ''))
+            trim((string) $request->input('notes', '')),
+            $entityType,
+            trim((string) $request->input('tax_id', '')),
+            trim((string) $request->input('fiscal_year_end', ''))
         );
 
         Response::ok(['contact' => $contact], 'Updated');
