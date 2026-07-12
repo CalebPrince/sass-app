@@ -49,5 +49,5 @@ function seed_database(Database $db, array $config): void
         }
     });
 
-    fwrite(STDERR, "[seed] Demo data created. Operator: admin@nimbus.test / Admin1234\n");
+    error_log("[seed] Demo data created. Operator: admin@nimbus.test / Admin1234");
 }

@@ -12,6 +12,7 @@
       <a class="brand" href="/app">Nim<span>bus</span></a>
       <ul class="side-nav">
         <li><button data-tab="overview" class="active">📊 Overview</button></li>
+        <li><button data-tab="contacts">👥 Contacts</button></li>
         <li><button data-tab="subscription">💳 Subscription</button></li>
         <li><button data-tab="account">⚙️ Account</button></li>
       </ul>
@@ -52,6 +53,62 @@
             <table>
               <thead><tr><th>When</th><th>Action</th><th>Resource</th><th>Qty</th></tr></thead>
               <tbody id="activity"><tr><td colspan="4" class="muted">Loading…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTACTS -->
+      <section class="tab-panel" id="tab-contacts">
+        <div class="card" style="margin-bottom:20px">
+          <h3 class="section-title" id="contact-form-title">Add contact</h3>
+          <form id="contact-form">
+            <input type="hidden" id="contact-editing-id" value="">
+            <div class="grid grid-3">
+              <div class="field">
+                <label>Name</label>
+                <input class="input" id="contact-name" required>
+              </div>
+              <div class="field">
+                <label>Email</label>
+                <input class="input" id="contact-email" type="email">
+              </div>
+              <div class="field">
+                <label>Phone</label>
+                <input class="input" id="contact-phone">
+              </div>
+              <div class="field">
+                <label>Company</label>
+                <input class="input" id="contact-company">
+              </div>
+              <div class="field">
+                <label>Status</label>
+                <select class="input" id="contact-status">
+                  <option value="lead">Lead</option>
+                  <option value="active">Active</option>
+                  <option value="customer">Customer</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Notes</label>
+                <input class="input" id="contact-notes">
+              </div>
+            </div>
+            <div class="form-msg" id="contact-msg"></div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-primary" type="submit" id="contact-submit">Add contact</button>
+              <button class="btn btn-ghost" type="button" id="contact-cancel-edit" style="display:none">Cancel</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <strong>Contacts</strong>
+          <div class="table-wrap" style="margin-top:12px">
+            <table>
+              <thead><tr><th>Name</th><th>Company</th><th>Status</th><th></th></tr></thead>
+              <tbody id="contact-rows"><tr><td colspan="4" class="muted">Loading…</td></tr></tbody>
             </table>
           </div>
         </div>
@@ -101,5 +158,6 @@
 
   <script src="/assets/js/api.js"></script>
   <script src="/assets/js/dashboard.js"></script>
+  <script src="/assets/js/contacts.js"></script>
 </body>
 </html>

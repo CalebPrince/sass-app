@@ -157,6 +157,35 @@ tbody tr:hover { background: var(--surface-2); }
 .toast.show { opacity: 1; transform: translateY(0); }
 .toast.err { border-color: var(--danger); }
 
+/* ---- landing: how it works ---- */
+.steps { padding: 10px 0 50px; }
+.step-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: 999px; margin-bottom: .8rem;
+  background: linear-gradient(135deg, var(--brand), #8b5cf6); color: #fff;
+  font-weight: 800; font-size: .95rem;
+}
+
+/* ---- landing: security section ---- */
+.security-section { padding: 10px 0 50px; }
+.security-section .card { display: flex; gap: 16px; align-items: flex-start; }
+.security-section .card .icon { font-size: 1.4rem; line-height: 1; }
+
+/* ---- landing: FAQ ---- */
+.faq { padding: 10px 0 60px; max-width: 780px; margin: 0 auto; }
+.faq-item {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 4px 22px; margin-bottom: 12px;
+}
+.faq-item summary {
+  cursor: pointer; padding: 16px 0; font-weight: 600; color: var(--text);
+  list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 12px;
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after { content: "+"; color: var(--brand-2); font-size: 1.2rem; flex: none; }
+.faq-item[open] summary::after { content: "\2212"; }
+.faq-item p { margin: 0 0 16px; }
+
 /* ---- responsive ---- */
 @media (max-width: 860px) {
   .grid-3, .grid-4 { grid-template-columns: 1fr; }

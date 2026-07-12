@@ -45,6 +45,7 @@ return [
             'price_cents'    => 0,
             'seats'          => 2,
             'resource_limit' => 1_000,        // usage events / month
+            'max_contacts'   => 100,
             'features'       => ['core_dashboard', 'email_support'],
         ],
         'pro' => [
@@ -52,6 +53,7 @@ return [
             'price_cents'    => 4900,
             'seats'          => 10,
             'resource_limit' => 50_000,
+            'max_contacts'   => 2_500,
             'features'       => ['core_dashboard', 'email_support', 'api_access', 'advanced_analytics'],
         ],
         'enterprise' => [
@@ -59,6 +61,7 @@ return [
             'price_cents'    => 24900,
             'seats'          => 100,
             'resource_limit' => 1_000_000,
+            'max_contacts'   => 100_000,
             'features'       => ['core_dashboard', 'priority_support', 'api_access', 'advanced_analytics', 'sso', 'audit_export'],
         ],
     ],

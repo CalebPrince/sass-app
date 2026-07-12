@@ -50,6 +50,113 @@
       </div>
     </section>
 
+    <section id="how-it-works" class="steps container">
+      <div class="center" style="margin:40px 0 26px">
+        <h2>How it works</h2>
+        <p>From sign-up to scaled-up team, in four steps.</p>
+      </div>
+      <div class="grid grid-4">
+        <div class="card">
+          <div class="step-num">1</div>
+          <h3>Create your account</h3>
+          <p>Register your company and you're instantly provisioned as your own isolated
+             tenant, on the free Starter plan — no setup, no sales call.</p>
+        </div>
+        <div class="card">
+          <div class="step-num">2</div>
+          <h3>Invite your team</h3>
+          <p>Add teammates as client or owner users. Every seat lives inside your tenant
+             boundary and inherits your company's plan and permissions.</p>
+        </div>
+        <div class="card">
+          <div class="step-num">3</div>
+          <h3>Work from one dashboard</h3>
+          <p>Your Control Center tracks resource usage in real time and gives everyone a
+             single place to see what's happening across the account.</p>
+        </div>
+        <div class="card">
+          <div class="step-num">4</div>
+          <h3>Upgrade as you grow</h3>
+          <p>Outgrowing your limits? Switch plans in one click from the Subscription tab —
+             billing, seats and resource ceilings update immediately.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="container" style="padding:10px 0 50px">
+      <div class="center" style="margin:40px 0 26px">
+        <h2>What's included</h2>
+        <p>Every plan gets the full platform — limits scale with your tier, not your feature set.</p>
+      </div>
+      <div class="grid grid-3">
+        <div class="card">
+          <h3>🏢 Multi-tenant by design</h3>
+          <p>Every company gets a private workspace. Data, users, billing and settings are
+             fully separated at the database layer — never merged, never shared.</p>
+        </div>
+        <div class="card">
+          <h3>👥 Team &amp; role management</h3>
+          <p>Assign teammates as members or owners. Owners manage billing and plan changes;
+             members get day-to-day access without touching account settings.</p>
+        </div>
+        <div class="card">
+          <h3>📊 Live usage metering</h3>
+          <p>Every plan ships with a resource meter and activity feed, so you always know
+             where you stand against your monthly limit before you hit it.</p>
+        </div>
+        <div class="card">
+          <h3>💳 Self-service billing</h3>
+          <p>Change plans, review active features, and browse full invoice history without
+             ever filing a support ticket.</p>
+        </div>
+        <div class="card">
+          <h3>🛠️ Global admin console</h3>
+          <p>Platform operators get a dedicated console with live metrics, per-tenant
+             overrides, and a full audit trail of every privileged action.</p>
+        </div>
+        <div class="card">
+          <h3>🔌 Simple API surface</h3>
+          <p>A clean, predictable JSON API behind every screen — the same endpoints your
+             dashboard uses are yours to script against.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="security" class="security-section container">
+      <div class="center" style="margin:40px 0 26px">
+        <h2>Isolation you can verify</h2>
+        <p>The core guarantee of this platform, explained plainly.</p>
+      </div>
+      <div class="grid grid-3">
+        <div class="card">
+          <span class="icon">🧱</span>
+          <div>
+            <h3>Every row is tenant-scoped</h3>
+            <p>Companies, users, invoices, usage and every other record carry an explicit
+               tenant id. Application code always filters by it — there is no query path
+               that can cross the boundary.</p>
+          </div>
+        </div>
+        <div class="card">
+          <span class="icon">🔑</span>
+          <div>
+            <h3>Server decides your tenant, not you</h3>
+            <p>Your tenant is bound to your session the moment you log in. The browser never
+               sends a tenant id, so there's nothing a client could tamper with to reach
+               another company's data.</p>
+          </div>
+        </div>
+        <div class="card">
+          <span class="icon">🛡️</span>
+          <div>
+            <h3>Hardened by default</h3>
+            <p>Session fixation protection, CSRF-guarded writes, hashed passwords, and
+               prepared statements on every query — the basics done correctly, everywhere.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="pricing" class="pricing container">
       <div class="center" style="margin:40px 0 26px">
         <h2>Simple, honest pricing</h2>
@@ -97,6 +204,40 @@
           <a class="btn btn-ghost" href="/register?plan=enterprise">Contact sales</a>
         </div>
       </div>
+    </section>
+
+    <section id="faq" class="faq container">
+      <div class="center" style="margin:10px 0 26px">
+        <h2>Frequently asked questions</h2>
+      </div>
+      <details class="faq-item">
+        <summary>Is my company's data really isolated from other tenants?</summary>
+        <p>Yes. Every tenant-owned table carries a tenant id, and every application query
+           is scoped to the tenant bound to your logged-in session — never one supplied by
+           the browser. One company cannot address, let alone read, another's rows.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Can I change plans later?</summary>
+        <p>Anytime, from the Subscription tab in your Control Center. Switching plans
+           updates your seats, resource limits and billing immediately — no downtime, no
+           support ticket required.</p>
+      </details>
+      <details class="faq-item">
+        <summary>What happens if I hit my plan's resource limit?</summary>
+        <p>You'll see it coming on the usage meter before you get there. Once you hit the
+           ceiling, further metered actions are blocked until you upgrade or the next
+           billing period starts.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Do you offer a free plan?</summary>
+        <p>Yes — Starter is free forever, with enough seats and monthly resource allowance
+           to fully evaluate the platform before you pay for anything.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Who can access the admin console?</summary>
+        <p>Only platform operators with the super_admin role. It's a separate console from
+           your company's dashboard and cannot be reached by regular tenant users.</p>
+      </details>
     </section>
   </main>
 

@@ -39,9 +39,9 @@ restart.
 
 | # | Layer | Route | Notes |
 |---|-------|-------|-------|
-| 1 | **Public marketing site** | `/` | Hero + pricing tiers (Starter / Pro / Enterprise), CTAs into registration. |
+| 1 | **Public marketing site** | `/` | Hero, how-it-works, feature deep-dive, tenant-isolation explainer, pricing tiers (Starter / Pro / Enterprise), FAQ, CTAs into registration. |
 | 2 | **Authentication** | `/register`, `/login` | Session-based auth, CSRF-guarded, password rules, fixation-safe login, role-based post-auth redirect. |
-| 3 | **Client Control Center** | `/app` | Private per-tenant dashboard, usage meter, and a Subscription tab (plan, features, invoices). |
+| 3 | **Client Control Center** | `/app` | Private per-tenant dashboard, usage meter, a Contacts tab (tier-limited lead/customer manager), and a Subscription tab (plan, features, invoices). |
 | 4 | **Global Admin Console** | `/admin` | Super-admin only: live metrics (active users, MRR/ARR), user/tenant table with ban + tier + limit overrides, audit log, system switches. |
 
 ## Seeded demo accounts
@@ -72,22 +72,23 @@ database/
 src/
   Core/                   # Database (PDO), Router, Request, Response, Session, Controller, Migration
   Middleware/Guards.php   # auth / active / csrf / admin guards
-  Models/                 # Tenant, User, Subscription, Invoice, UsageLog, AuditLog, GlobalSetting
-  Controllers/            # Auth, Dashboard, Subscription, Admin
+  Models/                 # Tenant, User, Subscription, Invoice, UsageLog, Contact, AuditLog, GlobalSetting
+  Controllers/            # Auth, Dashboard, Subscription, Contact, Admin
 public/
   index.php               # Front controller: autoload → boot DB → routes → dispatch
   assets/css/app.css      # Minimalist utility stylesheet
-  assets/js/              # api.js (fetch wrapper) + dashboard.js + admin.js
+  assets/js/              # api.js (fetch wrapper) + dashboard.js + contacts.js + admin.js
   views/                  # landing / login / register / app / admin HTML shells
 storage/app.sqlite        # Generated on first run (gitignored)
 ```
 
 ## Database schema
 
-Core tables — `tenants`, `users`, `subscriptions`, `usage_logs`, `global_settings` —
-plus supporting `invoices` and `audit_logs`. All queries use **prepared
-statements** through the `Database` wrapper, so user input is always bound, never
-concatenated. See [`database/schema.sql`](database/schema.sql) for the indexed DDL.
+Core tables — `tenants`, `users`, `subscriptions`, `usage_logs`, `contacts`,
+`global_settings` — plus supporting `invoices` and `audit_logs`. All queries use
+**prepared statements** through the `Database` wrapper, so user input is always
+bound, never concatenated. See [`database/schema.sql`](database/schema.sql) for
+the indexed DDL.
 
 ## API surface
 
@@ -98,6 +99,9 @@ GET  /api/auth/me              POST /api/auth/password
 GET  /api/dashboard/overview   POST /api/dashboard/track
 GET  /api/subscription         POST /api/subscription/change
 
+GET  /api/contacts             POST /api/contacts
+POST /api/contacts/{id}        POST /api/contacts/{id}/delete
+
 GET  /api/admin/metrics        GET  /api/admin/users       GET  /api/admin/audit
 POST /api/admin/users/{id}/status
 POST /api/admin/tenants/{id}/tier
@@ -105,6 +109,16 @@ POST /api/admin/tenants/{id}/limit
 POST /api/admin/tenants/{id}/status
 POST /api/admin/settings
 ```
+
+## Contacts (mini CRM)
+
+Every tenant gets a private contact/lead list in the **Contacts** tab of the
+Control Center — name, email, phone, company, status (lead / active / customer /
+inactive), and notes. Contact count is capped per subscription tier via
+`max_contacts` in [`config/config.php`](config/config.php), enforced the same way
+the usage-event `resource_limit` is enforced. See
+[`src/Models/Contact.php`](src/Models/Contact.php) and
+[`src/Controllers/ContactController.php`](src/Controllers/ContactController.php).
 
 ## Requirements
 

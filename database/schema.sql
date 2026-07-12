@@ -111,6 +111,27 @@ CREATE INDEX IF NOT EXISTS idx_usage_tenant_time ON usage_logs(tenant_id, create
 CREATE INDEX IF NOT EXISTS idx_usage_user        ON usage_logs(user_id);
 
 -- ----------------------------------------------------------------------------
+--  contacts — per-tenant CRM records (leads/customers). Count is capped by
+--  the tier's max_contacts limit, enforced the same way usage_logs enforces
+--  resource_limit.
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS contacts (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    uuid        TEXT    NOT NULL UNIQUE,
+    tenant_id   INTEGER NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+    name        TEXT    NOT NULL,
+    email       TEXT    NOT NULL DEFAULT '',
+    phone       TEXT    NOT NULL DEFAULT '',
+    company     TEXT    NOT NULL DEFAULT '',
+    status      TEXT    NOT NULL DEFAULT 'lead'
+                    CHECK (status IN ('lead', 'active', 'customer', 'inactive')),
+    notes       TEXT    NOT NULL DEFAULT '',
+    created_at  TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    updated_at  TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+);
+CREATE INDEX IF NOT EXISTS idx_contacts_tenant_status ON contacts(tenant_id, status);
+
+-- ----------------------------------------------------------------------------
 --  audit_logs — immutable trail of privileged (admin override) actions.
 -- ----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS audit_logs (

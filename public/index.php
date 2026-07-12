@@ -22,6 +22,7 @@ use App\Middleware\Guards;
 use App\Controllers\AuthController;
 use App\Controllers\DashboardController;
 use App\Controllers\SubscriptionController;
+use App\Controllers\ContactController;
 use App\Controllers\AdminController;
 
 // ---- 1. Autoloader --------------------------------------------------------
@@ -98,6 +99,12 @@ $router->post('/api/dashboard/track',   [$dash, 'track'],    $clientWrite);
 $sub = new SubscriptionController($config);
 $router->get('/api/subscription',        [$sub, 'show'],   $clientGuards);
 $router->post('/api/subscription/change', [$sub, 'change'], $clientWrite);
+
+$contacts = new ContactController($config);
+$router->get('/api/contacts',              [$contacts, 'list'],   $clientGuards);
+$router->post('/api/contacts',             [$contacts, 'create'], $clientWrite);
+$router->post('/api/contacts/{id}',        [$contacts, 'update'], $clientWrite);
+$router->post('/api/contacts/{id}/delete', [$contacts, 'delete'], $clientWrite);
 
 // --- API: global admin console (super_admin only) ---
 $adminRead  = [[Guards::class, 'admin']];
