@@ -46,6 +46,7 @@ return [
             'seats'          => 2,
             'resource_limit' => 1_000,        // usage events / month
             'max_contacts'   => 100,
+            'max_projects'   => 3,
             'features'       => ['core_dashboard', 'email_support'],
         ],
         'pro' => [
@@ -54,6 +55,7 @@ return [
             'seats'          => 10,
             'resource_limit' => 50_000,
             'max_contacts'   => 2_500,
+            'max_projects'   => 25,
             'features'       => ['core_dashboard', 'email_support', 'api_access', 'advanced_analytics'],
         ],
         'enterprise' => [
@@ -62,6 +64,7 @@ return [
             'seats'          => 100,
             'resource_limit' => 1_000_000,
             'max_contacts'   => 100_000,
+            'max_projects'   => 500,
             'features'       => ['core_dashboard', 'priority_support', 'api_access', 'advanced_analytics', 'sso', 'audit_export'],
         ],
     ],

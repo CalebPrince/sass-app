@@ -132,6 +132,41 @@ CREATE TABLE IF NOT EXISTS contacts (
 CREATE INDEX IF NOT EXISTS idx_contacts_tenant_status ON contacts(tenant_id, status);
 
 -- ----------------------------------------------------------------------------
+--  projects / tasks — per-tenant lightweight project tracker. Project count is
+--  capped by the tier's max_projects limit; tasks belong to exactly one project
+--  and carry tenant_id directly (never inferred via join), same convention as
+--  every other tenant-owned table.
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS projects (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    uuid        TEXT    NOT NULL UNIQUE,
+    tenant_id   INTEGER NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+    name        TEXT    NOT NULL,
+    description TEXT    NOT NULL DEFAULT '',
+    status      TEXT    NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'archived')),
+    created_at  TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    updated_at  TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+);
+CREATE INDEX IF NOT EXISTS idx_projects_tenant_status ON projects(tenant_id, status);
+
+CREATE TABLE IF NOT EXISTS tasks (
+    id                INTEGER PRIMARY KEY AUTOINCREMENT,
+    uuid              TEXT    NOT NULL UNIQUE,
+    tenant_id         INTEGER NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+    project_id        INTEGER NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    title             TEXT    NOT NULL,
+    description       TEXT    NOT NULL DEFAULT '',
+    status            TEXT    NOT NULL DEFAULT 'todo'
+                          CHECK (status IN ('todo', 'in_progress', 'done')),
+    assignee_user_id  INTEGER REFERENCES users(id) ON DELETE SET NULL,
+    due_date          TEXT,
+    created_at        TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    updated_at        TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+);
+CREATE INDEX IF NOT EXISTS idx_tasks_tenant_project ON tasks(tenant_id, project_id);
+CREATE INDEX IF NOT EXISTS idx_tasks_assignee        ON tasks(assignee_user_id);
+
+-- ----------------------------------------------------------------------------
 --  audit_logs — immutable trail of privileged (admin override) actions.
 -- ----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS audit_logs (

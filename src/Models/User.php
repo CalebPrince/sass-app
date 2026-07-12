@@ -28,6 +28,16 @@ final class User
         return Database::instance()->first('SELECT * FROM users WHERE lower(email) = lower(?)', [$email]);
     }
 
+    /** The multi-tenant barrier: always scoped by tenant_id. Powers team/assignee pickers. */
+    public static function forTenant(int $tenantId): array
+    {
+        $rows = Database::instance()->select(
+            "SELECT * FROM users WHERE tenant_id = ? AND status = 'active' ORDER BY name",
+            [$tenantId]
+        );
+        return array_map([self::class, 'publicView'], $rows);
+    }
+
     public static function verifyPassword(array $user, string $password): bool
     {
         return password_verify($password, $user['password_hash']);

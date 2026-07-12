@@ -157,6 +157,10 @@ tbody tr:hover { background: var(--surface-2); }
 .toast.show { opacity: 1; transform: translateY(0); }
 .toast.err { border-color: var(--danger); }
 
+/* ---- projects ---- */
+.project-card { cursor: pointer; }
+.project-card.selected { border-color: var(--brand); box-shadow: 0 0 0 1px var(--brand); }
+
 /* ---- landing: how it works ---- */
 .steps { padding: 10px 0 50px; }
 .step-num {

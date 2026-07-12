@@ -13,6 +13,7 @@
       <ul class="side-nav">
         <li><button data-tab="overview" class="active">📊 Overview</button></li>
         <li><button data-tab="contacts">👥 Contacts</button></li>
+        <li><button data-tab="projects">🗂️ Projects</button></li>
         <li><button data-tab="subscription">💳 Subscription</button></li>
         <li><button data-tab="account">⚙️ Account</button></li>
       </ul>
@@ -114,6 +115,87 @@
         </div>
       </section>
 
+      <!-- PROJECTS -->
+      <section class="tab-panel" id="tab-projects">
+        <div class="card" style="margin-bottom:20px">
+          <h3 class="section-title" id="project-form-title">New project</h3>
+          <form id="project-form">
+            <input type="hidden" id="project-editing-id" value="">
+            <div class="grid grid-3">
+              <div class="field">
+                <label>Name</label>
+                <input class="input" id="project-name" required>
+              </div>
+              <div class="field">
+                <label>Description</label>
+                <input class="input" id="project-description">
+              </div>
+              <div class="field">
+                <label>Status</label>
+                <select class="input" id="project-status">
+                  <option value="active">Active</option>
+                  <option value="archived">Archived</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-msg" id="project-msg"></div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-primary" type="submit" id="project-submit">Add project</button>
+              <button class="btn btn-ghost" type="button" id="project-cancel-edit" style="display:none">Cancel</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="grid grid-3" id="project-cards" style="margin-bottom:20px"></div>
+
+        <div class="card" id="task-panel" style="display:none">
+          <h3 class="section-title">Tasks — <span id="task-panel-project-name"></span></h3>
+          <form id="task-form" style="margin-bottom:18px">
+            <input type="hidden" id="task-editing-id" value="">
+            <div class="grid grid-4">
+              <div class="field">
+                <label>Title</label>
+                <input class="input" id="task-title" required>
+              </div>
+              <div class="field">
+                <label>Description</label>
+                <input class="input" id="task-description">
+              </div>
+              <div class="field">
+                <label>Assignee</label>
+                <select class="input" id="task-assignee">
+                  <option value="">Unassigned</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Due date</label>
+                <input class="input" id="task-due-date" type="date">
+              </div>
+              <div class="field">
+                <label>Status</label>
+                <select class="input" id="task-status">
+                  <option value="todo">To do</option>
+                  <option value="in_progress">In progress</option>
+                  <option value="done">Done</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-msg" id="task-msg"></div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-primary" type="submit" id="task-submit">Add task</button>
+              <button class="btn btn-ghost" type="button" id="task-cancel-edit" style="display:none">Cancel</button>
+            </div>
+          </form>
+
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Title</th><th>Assignee</th><th>Due</th><th>Status</th><th></th></tr></thead>
+              <tbody id="task-rows"><tr><td colspan="5" class="muted">Loading…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
       <!-- SUBSCRIPTION -->
       <section class="tab-panel" id="tab-subscription">
         <div class="card" style="margin-bottom:20px" id="current-plan-card">
@@ -159,5 +241,6 @@
   <script src="/assets/js/api.js"></script>
   <script src="/assets/js/dashboard.js"></script>
   <script src="/assets/js/contacts.js"></script>
+  <script src="/assets/js/projects.js"></script>
 </body>
 </html>

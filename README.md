@@ -41,7 +41,7 @@ restart.
 |---|-------|-------|-------|
 | 1 | **Public marketing site** | `/` | Hero, how-it-works, feature deep-dive, tenant-isolation explainer, pricing tiers (Starter / Pro / Enterprise), FAQ, CTAs into registration. |
 | 2 | **Authentication** | `/register`, `/login` | Session-based auth, CSRF-guarded, password rules, fixation-safe login, role-based post-auth redirect. |
-| 3 | **Client Control Center** | `/app` | Private per-tenant dashboard, usage meter, a Contacts tab (tier-limited lead/customer manager), and a Subscription tab (plan, features, invoices). |
+| 3 | **Client Control Center** | `/app` | Private per-tenant dashboard, usage meter, a Contacts tab (tier-limited lead/customer manager), a Projects tab (project/task tracker with assignees), and a Subscription tab (plan, features, invoices). |
 | 4 | **Global Admin Console** | `/admin` | Super-admin only: live metrics (active users, MRR/ARR), user/tenant table with ban + tier + limit overrides, audit log, system switches. |
 
 ## Seeded demo accounts
@@ -72,12 +72,12 @@ database/
 src/
   Core/                   # Database (PDO), Router, Request, Response, Session, Controller, Migration
   Middleware/Guards.php   # auth / active / csrf / admin guards
-  Models/                 # Tenant, User, Subscription, Invoice, UsageLog, Contact, AuditLog, GlobalSetting
-  Controllers/            # Auth, Dashboard, Subscription, Contact, Admin
+  Models/                 # Tenant, User, Subscription, Invoice, UsageLog, Contact, Project, Task, AuditLog, GlobalSetting
+  Controllers/            # Auth, Dashboard, Subscription, Contact, Project, Task, Admin
 public/
   index.php               # Front controller: autoload → boot DB → routes → dispatch
   assets/css/app.css      # Minimalist utility stylesheet
-  assets/js/              # api.js (fetch wrapper) + dashboard.js + contacts.js + admin.js
+  assets/js/              # api.js (fetch wrapper) + dashboard.js + contacts.js + projects.js + admin.js
   views/                  # landing / login / register / app / admin HTML shells
 storage/app.sqlite        # Generated on first run (gitignored)
 ```
@@ -85,7 +85,8 @@ storage/app.sqlite        # Generated on first run (gitignored)
 ## Database schema
 
 Core tables — `tenants`, `users`, `subscriptions`, `usage_logs`, `contacts`,
-`global_settings` — plus supporting `invoices` and `audit_logs`. All queries use
+`projects`, `tasks`, `global_settings` — plus supporting `invoices` and
+`audit_logs`. All queries use
 **prepared statements** through the `Database` wrapper, so user input is always
 bound, never concatenated. See [`database/schema.sql`](database/schema.sql) for
 the indexed DDL.
@@ -101,6 +102,12 @@ GET  /api/subscription         POST /api/subscription/change
 
 GET  /api/contacts             POST /api/contacts
 POST /api/contacts/{id}        POST /api/contacts/{id}/delete
+
+GET  /api/projects             POST /api/projects
+POST /api/projects/{id}        POST /api/projects/{id}/delete
+GET  /api/projects/{id}/tasks  POST /api/projects/{id}/tasks
+POST /api/tasks/{id}           POST /api/tasks/{id}/delete
+GET  /api/team
 
 GET  /api/admin/metrics        GET  /api/admin/users       GET  /api/admin/audit
 POST /api/admin/users/{id}/status
@@ -119,6 +126,20 @@ inactive), and notes. Contact count is capped per subscription tier via
 the usage-event `resource_limit` is enforced. See
 [`src/Models/Contact.php`](src/Models/Contact.php) and
 [`src/Controllers/ContactController.php`](src/Controllers/ContactController.php).
+
+## Projects & tasks
+
+Every tenant also gets a lightweight project tracker in the **Projects** tab —
+create projects, then select one to manage its tasks (title, description, status,
+assignee, due date). Assignees are drawn only from that tenant's own team
+(`GET /api/team`), so a task can never be handed to a user outside the company.
+Project count is capped per subscription tier via `max_projects` in
+[`config/config.php`](config/config.php), the same enforcement pattern as Contacts.
+Deleting a project cascades to its tasks (`ON DELETE CASCADE`). See
+[`src/Models/Project.php`](src/Models/Project.php),
+[`src/Models/Task.php`](src/Models/Task.php),
+[`src/Controllers/ProjectController.php`](src/Controllers/ProjectController.php), and
+[`src/Controllers/TaskController.php`](src/Controllers/TaskController.php).
 
 ## Requirements
 

@@ -23,6 +23,8 @@ use App\Controllers\AuthController;
 use App\Controllers\DashboardController;
 use App\Controllers\SubscriptionController;
 use App\Controllers\ContactController;
+use App\Controllers\ProjectController;
+use App\Controllers\TaskController;
 use App\Controllers\AdminController;
 
 // ---- 1. Autoloader --------------------------------------------------------
@@ -105,6 +107,19 @@ $router->get('/api/contacts',              [$contacts, 'list'],   $clientGuards)
 $router->post('/api/contacts',             [$contacts, 'create'], $clientWrite);
 $router->post('/api/contacts/{id}',        [$contacts, 'update'], $clientWrite);
 $router->post('/api/contacts/{id}/delete', [$contacts, 'delete'], $clientWrite);
+
+$projects = new ProjectController($config);
+$router->get('/api/projects',              [$projects, 'list'],       $clientGuards);
+$router->post('/api/projects',             [$projects, 'create'],     $clientWrite);
+$router->post('/api/projects/{id}',        [$projects, 'update'],     $clientWrite);
+$router->post('/api/projects/{id}/delete', [$projects, 'delete'],     $clientWrite);
+$router->get('/api/projects/{id}/tasks',   [$projects, 'tasks'],      $clientGuards);
+$router->post('/api/projects/{id}/tasks',  [$projects, 'createTask'], $clientWrite);
+$router->get('/api/team',                  [$projects, 'team'],       $clientGuards);
+
+$tasks = new TaskController($config);
+$router->post('/api/tasks/{id}',           [$tasks, 'update'], $clientWrite);
+$router->post('/api/tasks/{id}/delete',    [$tasks, 'delete'], $clientWrite);
 
 // --- API: global admin console (super_admin only) ---
 $adminRead  = [[Guards::class, 'admin']];
