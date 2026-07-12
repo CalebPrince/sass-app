@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nimbus — SaaS analytics that scales with you</title>
+  <meta name="description" content="Nimbus is a lightweight, multi-tenant SaaS platform. Start free, upgrade as you grow.">
+  <link rel="stylesheet" href="/assets/css/app.css">
+</head>
+<body>
+  <header class="nav">
+    <div class="container">
+      <a class="brand" href="/">Nim<span>bus</span></a>
+      <nav class="nav-links">
+        <a class="btn btn-ghost btn-sm" href="/login">Sign in</a>
+        <a class="btn btn-primary btn-sm" href="/register">Start free</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero container">
+      <span class="pill">◆ Multi-tenant · Secure · Zero bloat</span>
+      <h1>Analytics that <span class="gradient-text">scale with your team</span></h1>
+      <p class="lead">One clean dashboard for your whole company. Strict tenant isolation,
+        transparent billing, and an operator console built in. No frameworks, no bloat.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a class="btn btn-primary" href="/register">Create your account →</a>
+        <a class="btn btn-ghost" href="#pricing">See pricing</a>
+      </div>
+    </section>
+
+    <section class="container" style="padding:20px 20px 10px">
+      <div class="grid grid-3">
+        <div class="card">
+          <h3>🔒 Hard tenant isolation</h3>
+          <p>Every row is scoped to your company at the database layer. Company A can never
+             see Company B's data — enforced by design, not convention.</p>
+        </div>
+        <div class="card">
+          <h3>💳 Transparent billing</h3>
+          <p>Track your plan, active features and full invoice history from a dedicated
+             subscription tab. Upgrade or downgrade in one click.</p>
+        </div>
+        <div class="card">
+          <h3>⚡ Fast by default</h3>
+          <p>Raw PHP + PDO on an indexed SQLite core, hydrated by vanilla JS. No heavy
+             bundlers, no runtime tax — just speed.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing" class="pricing container">
+      <div class="center" style="margin:40px 0 26px">
+        <h2>Simple, honest pricing</h2>
+        <p>Start on Starter for free. Upgrade the moment you outgrow it.</p>
+      </div>
+      <div class="grid grid-3">
+        <!-- Starter -->
+        <div class="card price-card">
+          <h3>Starter</h3>
+          <div class="price">$0<small>/mo</small></div>
+          <p>For individuals kicking the tires.</p>
+          <ul class="feature-list">
+            <li>Up to 2 seats</li>
+            <li>1,000 events / month</li>
+            <li>Core dashboard</li>
+            <li>Email support</li>
+          </ul>
+          <a class="btn btn-ghost" href="/register?plan=starter">Get started</a>
+        </div>
+        <!-- Pro -->
+        <div class="card price-card popular">
+          <span class="tag">MOST POPULAR</span>
+          <h3>Pro</h3>
+          <div class="price">$49<small>/mo</small></div>
+          <p>For growing teams that need more.</p>
+          <ul class="feature-list">
+            <li>Up to 10 seats</li>
+            <li>50,000 events / month</li>
+            <li>API access</li>
+            <li>Advanced analytics</li>
+          </ul>
+          <a class="btn btn-primary" href="/register?plan=pro">Choose Pro</a>
+        </div>
+        <!-- Enterprise -->
+        <div class="card price-card">
+          <h3>Enterprise</h3>
+          <div class="price">$249<small>/mo</small></div>
+          <p>For organizations at scale.</p>
+          <ul class="feature-list">
+            <li>Up to 100 seats</li>
+            <li>1M events / month</li>
+            <li>SSO + priority support</li>
+            <li>Audit log export</li>
+          </ul>
+          <a class="btn btn-ghost" href="/register?plan=enterprise">Contact sales</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container center" style="padding:40px 20px;color:var(--muted);border-top:1px solid var(--border)">
+    <p>© <span id="year"></span> Nimbus SaaS · Built with raw PHP, PDO &amp; SQLite.</p>
+  </footer>
+
+  <script src="/assets/js/api.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    // If already signed in, send them straight to their control center.
+    Api.session().then((user) => {
+      if (user) {
+        for (const a of document.querySelectorAll('a[href="/login"],a[href="/register"]')) {
+          a.setAttribute('href', user.role === 'super_admin' ? '/admin' : '/app');
+          if (a.textContent === 'Sign in') a.textContent = 'Open app';
+        }
+      }
+    });
+  </script>
+</body>
+</html>

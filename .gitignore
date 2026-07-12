@@ -1,0 +1,12 @@
+# Runtime SQLite database + WAL sidecars (regenerated on first boot)
+/storage/*.sqlite
+/storage/*.sqlite-wal
+/storage/*.sqlite-shm
+
+# OS / editor noise
+.DS_Store
+*.log
+.idea/
+.vscode/
+__pycache__/
+*.pyc

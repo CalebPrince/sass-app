@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard · Nimbus</title>
+  <link rel="stylesheet" href="/assets/css/app.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="/app">Nim<span>bus</span></a>
+      <ul class="side-nav">
+        <li><button data-tab="overview" class="active">📊 Overview</button></li>
+        <li><button data-tab="subscription">💳 Subscription</button></li>
+        <li><button data-tab="account">⚙️ Account</button></li>
+      </ul>
+    </aside>
+
+    <div class="main">
+      <div class="topbar">
+        <div>
+          <h2 id="hello" class="section-title" style="margin:0">Loading…</h2>
+          <span class="muted" id="tenant-label"></span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span class="badge badge-ok" id="plan-badge">—</span>
+          <button class="btn btn-ghost btn-sm" id="logout">Sign out</button>
+        </div>
+      </div>
+
+      <!-- OVERVIEW -->
+      <section class="tab-panel active" id="tab-overview">
+        <div class="grid grid-3" style="margin-bottom:20px">
+          <div class="card stat"><div class="k">Current plan</div><div class="v small" id="stat-plan">—</div></div>
+          <div class="card stat"><div class="k">Usage this month</div><div class="v small" id="stat-usage">—</div></div>
+          <div class="card stat"><div class="k">Status</div><div class="v small" id="stat-status">—</div></div>
+        </div>
+
+        <div class="card" style="margin-bottom:20px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <strong>Resource usage</strong>
+            <button class="btn btn-primary btn-sm" id="do-work">Simulate work +1</button>
+          </div>
+          <div class="meter"><span id="usage-bar" style="width:0%"></span></div>
+          <p class="muted" id="usage-text" style="margin-top:8px"></p>
+        </div>
+
+        <div class="card">
+          <strong>Recent activity</strong>
+          <div class="table-wrap" style="margin-top:12px">
+            <table>
+              <thead><tr><th>When</th><th>Action</th><th>Resource</th><th>Qty</th></tr></thead>
+              <tbody id="activity"><tr><td colspan="4" class="muted">Loading…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- SUBSCRIPTION -->
+      <section class="tab-panel" id="tab-subscription">
+        <div class="card" style="margin-bottom:20px" id="current-plan-card">
+          <h3 class="section-title">Your plan</h3>
+          <div id="plan-detail" class="muted">Loading…</div>
+        </div>
+
+        <h3 class="section-title">Change plan</h3>
+        <div class="grid grid-3" id="catalog" style="margin-bottom:22px"></div>
+
+        <div class="card">
+          <h3 class="section-title">Invoice history</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Invoice</th><th>Period</th><th>Amount</th><th>Status</th></tr></thead>
+              <tbody id="invoices"><tr><td colspan="4" class="muted">Loading…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ACCOUNT -->
+      <section class="tab-panel" id="tab-account">
+        <div class="card auth-card">
+          <h3 class="section-title">Change password</h3>
+          <form id="pw-form">
+            <div class="field">
+              <label>Current password</label>
+              <input class="input" id="cur-pw" type="password" required>
+            </div>
+            <div class="field">
+              <label>New password</label>
+              <input class="input" id="new-pw" type="password" required>
+            </div>
+            <div class="form-msg" id="pw-msg"></div>
+            <button class="btn btn-primary" type="submit">Update password</button>
+          </form>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/dashboard.js"></script>
+</body>
+</html>

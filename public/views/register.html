@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Create your Nimbus account</title>
+  <link rel="stylesheet" href="/assets/css/app.css">
+</head>
+<body>
+  <div class="auth-wrap">
+    <div class="auth-card card">
+      <a class="brand" href="/" style="display:block;margin-bottom:1rem">Nim<span>bus</span></a>
+      <h2 style="margin-bottom:.2rem">Create your account</h2>
+      <p style="margin-bottom:1.2rem">Spin up your company workspace in seconds.</p>
+
+      <form id="form" novalidate>
+        <div class="field">
+          <label for="company">Company name</label>
+          <input class="input" id="company" name="company" autocomplete="organization" required>
+        </div>
+        <div class="field">
+          <label for="name">Your name</label>
+          <input class="input" id="name" name="name" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="email">Work email</label>
+          <input class="input" id="email" type="email" name="email" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input class="input" id="password" type="password" name="password" autocomplete="new-password" required>
+          <small class="muted">Min 8 characters, with at least one letter and one number.</small>
+        </div>
+        <div class="form-msg" id="msg"></div>
+        <button class="btn btn-primary" style="width:100%" type="submit" id="submit">Create account</button>
+      </form>
+      <p class="center" style="margin-top:1rem">Already have an account? <a href="/login">Sign in</a></p>
+    </div>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script>
+    const form = document.getElementById('form');
+    const msg = document.getElementById('msg');
+    const btn = document.getElementById('submit');
+
+    // Get a CSRF token for the anonymous session before we can POST.
+    Api.session();
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      msg.className = 'form-msg';
+      msg.textContent = '';
+      btn.disabled = true;
+      try {
+        const r = await Api.post('/api/auth/register', {
+          company: company.value.trim(),
+          name: name.value.trim(),
+          email: email.value.trim(),
+          password: password.value,
+        });
+        Api.setCsrf(r.data.csrf);
+        window.location.href = r.data.redirect || '/app';
+      } catch (err) {
+        msg.className = 'form-msg error';
+        msg.textContent = err.message;
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

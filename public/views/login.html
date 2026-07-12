@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign in · Nimbus</title>
+  <link rel="stylesheet" href="/assets/css/app.css">
+</head>
+<body>
+  <div class="auth-wrap">
+    <div class="auth-card card">
+      <a class="brand" href="/" style="display:block;margin-bottom:1rem">Nim<span>bus</span></a>
+      <h2 style="margin-bottom:.2rem">Welcome back</h2>
+      <p style="margin-bottom:1.2rem">Sign in to your control center.</p>
+
+      <form id="form" novalidate>
+        <div class="field">
+          <label for="email">Email</label>
+          <input class="input" id="email" type="email" name="email" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input class="input" id="password" type="password" name="password" autocomplete="current-password" required>
+        </div>
+        <div class="form-msg" id="msg"></div>
+        <button class="btn btn-primary" style="width:100%" type="submit" id="submit">Sign in</button>
+      </form>
+      <p class="center" style="margin-top:1rem">New here? <a href="/register">Create an account</a></p>
+      <p class="center muted" style="margin-top:1.2rem;font-size:.8rem">
+        Demo: admin@nimbus.test / Admin1234 · owner@acme.test / Acme1234
+      </p>
+    </div>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script>
+    const form = document.getElementById('form');
+    const msg = document.getElementById('msg');
+    const btn = document.getElementById('submit');
+
+    Api.session().then((user) => {
+      if (user) window.location.href = user.role === 'super_admin' ? '/admin' : '/app';
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      msg.className = 'form-msg';
+      msg.textContent = '';
+      btn.disabled = true;
+      try {
+        const r = await Api.post('/api/auth/login', {
+          email: email.value.trim(),
+          password: password.value,
+        });
+        Api.setCsrf(r.data.csrf);
+        window.location.href = r.data.redirect || '/app';
+      } catch (err) {
+        msg.className = 'form-msg error';
+        msg.textContent = err.message;
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

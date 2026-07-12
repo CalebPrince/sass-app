@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Operator Console · Nimbus</title>
+  <link rel="stylesheet" href="/assets/css/app.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="/admin">Nim<span>bus</span> <small class="muted" style="font-size:.7rem">ops</small></a>
+      <ul class="side-nav">
+        <li><button data-tab="metrics" class="active">📈 Metrics</button></li>
+        <li><button data-tab="users">👥 Users &amp; tenants</button></li>
+        <li><button data-tab="settings">🛠 System</button></li>
+        <li><button data-tab="audit">📜 Audit log</button></li>
+      </ul>
+    </aside>
+
+    <div class="main">
+      <div class="topbar">
+        <h2 class="section-title" style="margin:0">Global Control Center</h2>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span class="badge badge-danger">SUPER ADMIN</span>
+          <button class="btn btn-ghost btn-sm" id="logout">Sign out</button>
+        </div>
+      </div>
+
+      <!-- METRICS -->
+      <section class="tab-panel active" id="tab-metrics">
+        <div class="grid grid-4" style="margin-bottom:20px">
+          <div class="card stat"><div class="k">Active users</div><div class="v" id="m-users">—</div></div>
+          <div class="card stat"><div class="k">MRR</div><div class="v" id="m-mrr">—</div></div>
+          <div class="card stat"><div class="k">ARR</div><div class="v" id="m-arr">—</div></div>
+          <div class="card stat"><div class="k">Tenants</div><div class="v" id="m-tenants">—</div></div>
+        </div>
+        <div class="grid grid-3">
+          <div class="card">
+            <strong>Plan distribution</strong>
+            <div id="m-tiers" style="margin-top:12px"></div>
+          </div>
+          <div class="card">
+            <strong>System health</strong>
+            <div id="m-health" style="margin-top:12px"></div>
+          </div>
+          <div class="card stat">
+            <div class="k">Banned users</div><div class="v small" id="m-banned">—</div>
+            <div class="k" style="margin-top:12px">Events today</div><div class="v small" id="m-events">—</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- USERS -->
+      <section class="tab-panel" id="tab-users">
+        <div style="display:flex;gap:10px;margin-bottom:14px">
+          <input class="input" id="search" placeholder="Search users, tenants…" style="max-width:320px">
+          <button class="btn btn-ghost btn-sm" id="refresh">Refresh</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>User</th><th>Tenant</th><th>Role</th><th>Plan</th><th>Limit</th><th>Status</th><th>Overrides</th>
+            </tr></thead>
+            <tbody id="user-rows"><tr><td colspan="7" class="muted">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section class="tab-panel" id="tab-settings">
+        <div class="card auth-card">
+          <h3 class="section-title">Platform switches</h3>
+          <label style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)">
+            <span>Maintenance mode</span>
+            <input type="checkbox" id="set-maintenance">
+          </label>
+          <label style="display:flex;justify-content:space-between;align-items:center;padding:10px 0">
+            <span>Signups open</span>
+            <input type="checkbox" id="set-signups">
+          </label>
+          <button class="btn btn-primary" id="save-settings" style="margin-top:14px">Save settings</button>
+        </div>
+      </section>
+
+      <!-- AUDIT -->
+      <section class="tab-panel" id="tab-audit">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>When</th><th>Actor</th><th>Action</th><th>Target</th><th>Detail</th></tr></thead>
+            <tbody id="audit-rows"><tr><td colspan="5" class="muted">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/admin.js"></script>
+</body>
+</html>
